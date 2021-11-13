@@ -3,15 +3,25 @@ import http from 'k6/http';
 
 export const options = {
     vus: 1,
-    // duration: '1m',
     thresholds: {
         // Ensure we have 100% compliance on API tests
         checks: [{ threshold: 'rate == 1.0', abortOnFail: true }],
     },
 };
 
-// TODO This should come from an environment variable
-const BASE_URL = 'http://localhost:9092';
+var targetProtocol = "http"
+if (__ENV.PROTOCOL !== undefined) {
+    targetProtocol = __ENV.PROTOCOL
+}
+var targetHost = "localhost"
+if (__ENV.HOST !== undefined) {
+    targetHost = __ENV.HOST
+}
+var targetPort = "80"
+if (__ENV.PORT !== undefined) {
+    targetPort = __ENV.PORT
+}
+const BASE_URL = `${targetProtocol}://${targetHost}:${targetPort}`;
 
 export default () => {
     const params = {
